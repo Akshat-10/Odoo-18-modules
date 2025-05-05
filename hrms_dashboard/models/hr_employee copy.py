@@ -41,6 +41,7 @@ class HrEmployee(models.Model):
                            help="Birthday of employee")
 
     def attendance_manual(self):
+        """Create and update an attendance for the user employee"""
         employee = request.env['hr.employee'].sudo().browse(
             self.env.user.employee_id.id)
         employee.sudo()._attendance_action_change({
@@ -57,6 +58,7 @@ class HrEmployee(models.Model):
 
     @api.model
     def check_user_group(self):
+        """To check the user is a hr manager or not"""
         uid = request.session.uid
         user = self.env['res.users'].sudo().search([('id', '=', uid)], limit=1)
         if user.has_group('hr.group_hr_manager'):
@@ -66,6 +68,7 @@ class HrEmployee(models.Model):
 
     @api.model
     def get_user_employee_details(self):
+        """To fetch the details of employee"""
         uid = request.session.uid
         employee = self.env['hr.employee'].sudo().search_read(
             [('user_id', '=', uid)], limit=1)
@@ -74,14 +77,15 @@ class HrEmployee(models.Model):
             fields=['id', 'check_in', 'check_out', 'worked_hours'])
         attendance_line = []
         for line in attendance:
-            val = {
-                'id': line['id'],
-                'date': line['check_in'].date().strftime('%d/%m/%Y'),
-                'sign_in': line['check_in'].strftime('%I:%M:%S %p') if line['check_in'] else '',
-                'sign_out': line['check_out'].strftime('%I:%M:%S %p') if line['check_out'] else '',
-                'worked_hours': format_duration(line['worked_hours']) if line['worked_hours'] else ''
-            }
-            attendance_line.append(val)
+            if line['check_in'] and line['check_out']:
+                val = {
+                    'id':line['id'],
+                    'date': line['check_in'].date(),
+                    'sign_in': line['check_in'].time().strftime('%H:%M'),
+                    'sign_out': line['check_out'].time().strftime('%H:%M'),
+                    'worked_hours': format_duration(line['worked_hours'])
+                }
+                attendance_line.append(val)
         leaves = self.env['hr.leave'].sudo().search_read(
             [('employee_id', '=', employee[0]['id'])],
             fields=['request_date_from', 'request_date_to', 'state', 'holiday_status_id', 'duration_display']
@@ -103,8 +107,6 @@ class HrEmployee(models.Model):
             else:
                 line['state'] = 'Refused'
                 line['color'] = 'red'
-            line['request_date_from'] = line['request_date_from'].strftime('%d/%m/%Y')
-            line['request_date_to'] = line['request_date_to'].strftime('%d/%m/%Y')
         expense = self.env['hr.expense'].sudo().search_read(
             [('employee_id', '=', employee[0]['id'])],
             fields=['name', 'date', 'state', 'total_amount'])
@@ -127,7 +129,6 @@ class HrEmployee(models.Model):
             else:
                 line['state'] = 'Refused'
                 line['color'] = 'red'
-            line['date'] = line['date'].strftime('%d/%m/%Y')
         leaves_to_approve = self.env['hr.leave'].sudo().search_count(
             [('state', 'in', ['confirm', 'validate1'])])
         today = datetime.strftime(datetime.today(), '%Y-%m-%d')

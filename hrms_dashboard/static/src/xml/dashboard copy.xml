@@ -398,8 +398,7 @@
                         <tbody>
                             <tr class="expense_lines"
                                 t-foreach="this.state.login_employee['expense_lines']"
-                                t-as="lines" t-key="lines['id']"
-                                t-on-click="() => this.openExpense(lines['id'])">
+                                t-as="lines" t-key="lines['id']">
                                 <td t-esc="lines['date']"/>
                                 <td t-esc="lines['name']"/>
                                 <td t-esc="lines['total_amount']"/>
@@ -425,8 +424,7 @@
                         <t t-if="this.state.employee_birthday">
                             <t t-foreach="this.state.employee_birthday" t-as="employee" t-key="employee['id']">
                                 <div class="col-sm-12 col-lg-12 birth_emp"
-                                     t-att-style="employee['is_birthday'] ? 'background: #3e6282;' : ''"
-                                     t-on-click="() => this.openEmployee(employee['id'])">
+                                     t-att-style="employee['is_birthday'] ? 'background: #3e6282;' : ''">
                                     <div class="text-color">
                                         <div class="">
                                             <div class="media">
@@ -467,8 +465,7 @@
                     </div>
                     <div class="col-xs-12 text-align">
                         <t t-foreach="this.state.upcoming_events" t-as="event" t-key="event['id']">
-                            <div class="col-sm-12 col-lg-12" style="padding:0;"
-                                 t-on-click="() => this.openEvent(event['id'])">
+                            <div class="col-sm-12 col-lg-12" style="padding:0;">
                                 <div class="text-color">
                                     <div class="">
                                         <div class="media">
@@ -498,8 +495,7 @@
                     </div>
                     <div class="col-xs-12 text-align">
                         <t t-foreach="this.state.announcements" t-as="announcement" t-key="announcement['id']">
-                            <div class="col-sm-12 col-lg-12" style="padding:0;"
-                                 t-on-click="() => this.openAnnouncement(announcement['id'])">
+                            <div class="col-sm-12 col-lg-12" style="padding:0;">
                                 <div class="text-color">
                                     <div class="">
                                         <div class="media">
@@ -528,7 +524,6 @@
                     </div>
                     <div class="leave_trend" t-ref="leave_trend" style="display: ruby-text;">
                         <canvas id="leaveTrendChart" style="height: 270px;"/>
-                        <button t-on-click="viewMyLeaves">View My Leaves</button>
                     </div>
                 </div>
             </div>
@@ -543,18 +538,6 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="col-sm-5 col-lg-5 monthly_attrition_rate">
-                <div class="oh-card text-color">
-                    <div class="oh-card-body pb-0">
-                        <h4 class="mb-0"></h4>
-                        <p class="stat-head" style="padding : 0px;">My Skill Analysis</p>
-                    </div>
-                    <div class="skill">
-                        <canvas id="skillChart" style="height: 275px; width:1000px !important"/>
-                        <button t-on-click="viewMySkills">View My Skills</button>
-                    </div>
-                </div>
-            </div> -->
         </div>
     </t>
 

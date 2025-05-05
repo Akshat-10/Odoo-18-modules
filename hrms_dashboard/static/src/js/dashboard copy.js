@@ -10,57 +10,57 @@ import { user } from "@web/core/user";
 const actionRegistry = registry.category("actions");
 import { ActivityMenu } from "@hr_attendance/components/attendance_menu/attendance_menu";
 import { patch } from "@web/core/utils/patch";
-
-export class HrDashboard extends Component {
+export class HrDashboard extends Component{
     static template = 'HrDashboardMain';
     static props = ["*"];
     setup() {
         this.effect = useService("effect");
         this.action = useService("action");
-        this.log_in_out = useRef("log_in_out");
-        this.emp_graph = useRef("emp_graph");
-        this.leave_graph = useRef("leave_graph");
-        this.join_resign_trend = useRef("join_resign_trend");
-        this.attrition_rate = useRef("attrition_rate");
-        this.leave_trend = useRef("leave_trend");
+        this.log_in_out = useRef("log_in_out")
+        this.emp_graph = useRef("emp_graph")
+        this.leave_graph = useRef("leave_graph")
+        this.join_resign_trend = useRef("join_resign_trend")
+        this.attrition_rate = useRef("attrition_rate")
+        this.leave_trend = useRef("leave_trend")
         this.orm = useService("orm");
         this.state = useState({
             is_manager: false,
             date_range: 'week',
-            dashboards_templates: ['LoginEmployeeDetails', 'ManagerDashboard', 'EmployeeDashboard'],
+            dashboards_templates: ['LoginEmployeeDetails','ManagerDashboard', 'EmployeeDashboard'],
             employee_birthday: [],
             upcoming_events: [],
             announcements: [],
             login_employee: [],
             templates: [],
-        });
+        })
         onWillStart(async () => {
             this.isHrManager = await user.hasGroup("hr.group_hr_manager");
-            this.state.login_employee = {};
-            if (await this.orm.call('hr.employee', 'check_user_group', [])) {
-                this.state.is_manager = true;
-            } else {
-                this.state.is_manager = false;
+            this.state.login_employee = {}
+            if ( await this.orm.call('hr.employee', 'check_user_group', []) ) {
+                this.state.is_manager = true
             }
-            var empDetails = await this.orm.call('hr.employee', 'get_user_employee_details', []);
-            if (empDetails) {
-                this.state.login_employee = empDetails[0];
+            else {
+                this.state.is_manager = false
             }
-            var res = await this.orm.call('hr.employee', 'get_upcoming', []);
-            if (res) {
+            var empDetails = await this.orm.call('hr.employee', 'get_user_employee_details', [])
+            if ( empDetails ){
+                this.state.login_employee = empDetails[0]
+            }
+            var res = await this.orm.call('hr.employee', 'get_upcoming', [])
+            if ( res ) {
                 this.state.employee_birthday = res['birthday'];
                 this.state.upcoming_events = res['event'];
                 this.state.announcements = res['announcement'];
             }
         });
         onMounted(() => {
-            this.title = 'Dashboard';
+            this.title = 'Dashboard'
             this.render_graphs();
         });
     }
-    render_graphs() {
+    render_graphs(){
         var self = this;
-        if (this.state.login_employee) {
+        if (this.state.login_employee){
             self.render_department_employee();
             self.render_leave_graph();
             self.update_join_resign_trends();
@@ -110,21 +110,14 @@ export class HrDashboard extends Component {
                                 }
                             }
                         }
-                    },
-                    // onClick: (event, elements) => {
-                    //     if (elements.length > 0) {
-                    //         const index = elements[0].index;
-                    //         const departmentId = data[index].id;
-                    //         this.openDepartmentEmployees(departmentId);
-                    //     }
-                    // }
+                    }
                 }
             });
         }
     }
     async render_leave_graph() {
         const colors = [
-            '#ffbf00', '#70cac1', '#659d4e', '#208cc2', '#4d6cb1', '#584999',
+            '#ffbf00','#70cac1', '#659d4e', '#208cc2', '#4d6cb1', '#584999',
             '#8e559e', '#cf3650', '#f65337', '#fe7139', '#ffa433',
             '#ffc25b', '#f8e54b'
         ];
@@ -142,7 +135,7 @@ export class HrDashboard extends Component {
                 d.total = total;
             });
             const labels = fData.map(d => d.l_month);
-            const barData = fData.map(d => d.total);
+             const barData = fData.map(d => d.total);
             const barCtx = document.getElementById('leave_barChart').getContext('2d');
             const barChart = new Chart(barCtx, {
                 type: 'bar',
@@ -170,17 +163,10 @@ export class HrDashboard extends Component {
                                 }
                             }
                         }
-                    },
-                    // onClick: (event, elements) => {
-                    //     if (elements.length > 0) {
-                    //         const index = elements[0].index;
-                    //         const month = labels[index];
-                    //         this.openLeavesForMonth(month);
-                    //     }
-                    // }
+                    }
                 }
             });
-            const pieData = dept.map(d => ({
+             const pieData = dept.map(d => ({
                 type: d,
                 leave: fData.reduce((acc, t) => acc + (t.leave[d] || 0), 0)
             }));
@@ -437,6 +423,27 @@ export class HrDashboard extends Component {
             });
         }
     }
+    // EVENT METHODS
+    add_attendance() {
+        this.action.doAction({
+            name: _t("Attendances"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.attendance',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new'
+        });
+    }
+    add_leave() {
+        this.action.doAction({
+            name: _t("Leave Request"),
+            type: 'ir.actions.act_window',
+            res_model: 'hr.leave',
+            view_mode: 'form',
+            views: [[false, 'form']],
+            target: 'new'
+        });
+    }
     add_leave() {
         this.action.doAction({
             name: _t("Leave Request"),
@@ -463,8 +470,8 @@ export class HrDashboard extends Component {
             type: 'ir.actions.act_window',
             res_model: 'hr.leave',
             view_mode: 'tree,form,calendar',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['state', 'in', ['confirm', 'validate1']]],
+            views: [[false, 'list'],[false, 'form']],
+            domain: [['state','in',['confirm','validate1']]],
             target: 'current'
         });
     }
@@ -474,22 +481,22 @@ export class HrDashboard extends Component {
             type: 'ir.actions.act_window',
             res_model: 'hr.leave.allocation',
             view_mode: 'tree,form,calendar',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['state', 'in', ['confirm', 'validate1']]],
+            views: [[false, 'list'],[false, 'form']],
+            domain: [['state','in',['confirm', 'validate1']]],
             target: 'current'
-        });
+        })
     }
-    job_applications_to_approve() {
+    job_applications_to_approve(){
         this.action.doAction({
             name: _t("Applications"),
             type: 'ir.actions.act_window',
             res_model: 'hr.applicant',
             view_mode: 'tree,kanban,form,pivot,graph,calendar',
-            views: [[false, 'list'], [false, 'kanban'], [false, 'form'],
-                    [false, 'pivot'], [false, 'graph'], [false, 'calendar']],
+            views: [[false, 'list'],[false, 'kanban'],[false, 'form'],
+                    [false, 'pivot'],[false, 'graph'],[false, 'calendar']],
             context: {},
             target: 'current'
-        });
+        })
     }
     leaves_request_today() {
         var date = new Date();
@@ -498,26 +505,26 @@ export class HrDashboard extends Component {
             type: 'ir.actions.act_window',
             res_model: 'hr.leave',
             view_mode: 'tree,form,calendar',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['date_from', '<=', date], ['date_to', '>=', date], ['state', '=', 'validate']],
+            views: [[false, 'list'],[false, 'form']],
+            domain: [['date_from','<=', date], ['date_to', '>=', date], ['state','=','validate']],
             target: 'current'
-        });
+        })
     }
     leaves_request_month() {
         var date = new Date();
         var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
         var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-        var fday = firstDay.toJSON().slice(0, 10).replace(/-/g, '-');
-        var lday = lastDay.toJSON().slice(0, 10).replace(/-/g, '-');
+        var fday = firstDay.toJSON().slice(0,10).replace(/-/g,'-');
+        var lday = lastDay.toJSON().slice(0,10).replace(/-/g,'-');
         this.action.doAction({
             name: _t("This Month Leaves"),
             type: 'ir.actions.act_window',
             res_model: 'hr.leave',
             view_mode: 'tree,form,calendar',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['date_from', '>', fday], ['state', '=', 'validate'], ['date_from', '<', lday]],
+            views: [[false, 'list'],[false, 'form']],
+            domain: [['date_from','>', fday],['state','=','validate'],['date_from','<', lday]],
             target: 'current'
-        });
+        })
     }
     hr_payslip() {
         this.action.doAction({
@@ -525,24 +532,24 @@ export class HrDashboard extends Component {
             type: 'ir.actions.act_window',
             res_model: 'hr.payslip',
             view_mode: 'tree,form,calendar',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['employee_id', '=', this.state.login_employee.id]],
+            views: [[false, 'list'],[false, 'form']],
+            domain: [['employee_id','=', this.state.login_employee.id]],
             target: 'current'
         });
     }
     async hr_contract() {
-        if (this.isHrManager) {
+        if(this.isHrManager){
             this.action.doAction({
                 name: _t("Contracts"),
                 type: 'ir.actions.act_window',
                 res_model: 'hr.contract',
                 view_mode: 'tree,form,calendar',
-                views: [[false, 'list'], [false, 'form']],
+                views: [[false, 'list'],[false, 'form']],
                 context: {
                     'search_default_employee_id': this.state.login_employee.id,
                 },
                 target: 'current'
-            });
+            })
         }
     }
     hr_timesheets() {
@@ -555,44 +562,51 @@ export class HrDashboard extends Component {
             context: {
                 'search_default_month': true,
             },
-            domain: [['employee_id', '=', this.state.login_employee.id]],
+            domain: [['employee_id','=', this.state.login_employee.id]],
             target: 'current'
-        });
+        })
     }
     employee_broad_factor() {
         var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
         this.action.doAction({
             name: _t("Leave Request"),
             type: 'ir.actions.act_window',
             res_model: 'hr.leave',
             view_mode: 'tree,form,calendar',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['state', 'in', ['validate']], ['employee_id', '=', this.state.login_employee.id], ['date_to', '<=', today]],
+            views: [[false, 'list'],[false, 'form']],
+            domain: [['state','in',['validate']],['employee_id','=', this.state.login_employee.id],['date_to','<=',today]],
             target: 'current',
-            context: { 'order': 'duration_display' }
-        });
+            context:{'order':'duration_display'}
+        })
     }
-    attendance_sign_in_out() {
+     attendance_sign_in_out() {
         if (this.state.login_employee['attendance_state'] == 'checked_out') {
-            this.state.login_employee['attendance_state'] = 'checked_in';
-        } else if (this.state.login_employee['attendance_state'] == 'checked_in') {
-            this.state.login_employee['attendance_state'] = 'checked_out';
+            this.state.login_employee['attendance_state'] = 'checked_in'
         }
-        this.update_attendance();
+        else{
+            if (this.state.login_employee['attendance_state'] == 'checked_in') {
+                this.state.login_employee['attendance_state'] = 'checked_out'
+            }
+        }
+        this.update_attendance()
     }
     async update_attendance() {
         var self = this;
-        var result = await this.orm.call('hr.employee', 'attendance_manual', [[this.state.login_employee.id]]);
+        var result = await this.orm.call('hr.employee', 'attendance_manual',[[this.state.login_employee.id]])
         if (result) {
             var attendance_state = this.state.login_employee.attendance_state;
-            var message = '';
-            if (attendance_state == 'checked_in') {
-                message = 'Checked In';
+            var message = ''
+            if (attendance_state == 'checked_in'){
+                message = 'Checked In'
                 this.env.bus.trigger('signin_signout', {
                     mode: "checked_in",
                 });
-            } else if (attendance_state == 'checked_out') {
-                message = 'Checked Out';
+            }
+            else if (attendance_state == 'checked_out'){
+                message = 'Checked Out'
                 this.env.bus.trigger('signin_signout', {
                     mode: false,
                 });
@@ -601,123 +615,26 @@ export class HrDashboard extends Component {
                 message: _t("Successfully " + message),
                 type: 'rainbow_man',
                 fadeout: "fast",
-            });
+            })
         }
     }
-    // New methods for opening records
-    openAttendance(attendanceId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.attendance',
-            res_id: attendanceId,
-            views: [[false, 'form']],
-            target: 'current'
-        });
-    }
-    openLeave(leaveId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.leave',
-            res_id: leaveId,
-            views: [[false, 'form']],
-            target: 'current'
-        });
-    }
-    openExpense(expenseId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.expense',
-            res_id: expenseId,
-            views: [[false, 'form']],
-            target: 'current'
-        });
-    }
-    openEmployee(employeeId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.employee',
-            res_id: employeeId,
-            views: [[false, 'form']],
-            target: 'current'
-        });
-    }
-    openEvent(eventId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'event.event',
-            res_id: eventId,
-            views: [[false, 'form']],
-            target: 'current'
-        });
-    }
-    openAnnouncement(announcementId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.announcement',
-            res_id: announcementId,
-            views: [[false, 'form']],
-            target: 'current'
-        });
-    }
-    viewMyLeaves() {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.leave',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['employee_id', '=', this.state.login_employee.id]],
-            target: 'current'
-        });
-    }
-    // viewMySkills() {
-    //     this.action.doAction({
-    //         type: 'ir.actions.act_window',
-    //         res_model: 'hr.employee.skill',
-    //         views: [[false, 'list'], [false, 'form']],
-    //         domain: [['employee_id', '=', this.state.login_employee.id]],
-    //         target: 'current'
-    //     });
-    // }
-    openDepartmentEmployees(departmentId) {
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.employee',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['department_id', '=', departmentId]],
-            target: 'current'
-        });
-    }
-    openLeavesForMonth(month) {
-        const [monthName, year] = month.split(' ');
-        const monthIndex = new Date(Date.parse(monthName + " 1, " + year)).getMonth() + 1;
-        const firstDay = new Date(year, monthIndex - 1, 1);
-        const lastDay = new Date(year, monthIndex, 0);
-        const fday = firstDay.toISOString().split('T')[0];
-        const lday = lastDay.toISOString().split('T')[0];
-        this.action.doAction({
-            type: 'ir.actions.act_window',
-            res_model: 'hr.leave',
-            views: [[false, 'list'], [false, 'form']],
-            domain: [['date_from', '>=', fday], ['date_from', '<=', lday], ['state', '=', 'validate']],
-            target: 'current'
-        });
-    }
 }
-registry.category("actions").add("hr_dashboard", HrDashboard);
+registry.category("actions").add("hr_dashboard", HrDashboard)
 
 patch(ActivityMenu.prototype, {
     setup() {
         super.setup();
-        var self = this;
+        var self = this
         onMounted(() => {
             this.env.bus.addEventListener('signin_signout', ({
                 detail
             }) => {
                 if (detail.mode == 'checked_in') {
-                    self.state.checkedIn = detail.mode;
+                    self.state.checkedIn = detail.mode
                 } else {
-                    self.state.checkedIn = false;
+                    self.state.checkedIn = false
                 }
-            });
-        });
+            })
+        })
     },
-});
+})

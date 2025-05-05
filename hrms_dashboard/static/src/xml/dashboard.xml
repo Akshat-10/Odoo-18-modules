@@ -466,19 +466,26 @@
                         </div>
                     </div>
                     <div class="col-xs-12 text-align">
-                        <t t-foreach="this.state.upcoming_events" t-as="event" t-key="event['id']">
-                            <div class="col-sm-12 col-lg-12" style="padding:0;"
-                                 t-on-click="() => this.openEvent(event['id'])">
+                        <t t-foreach="this.state.upcoming_events" t-as="event"
+                           t-key="event">
+                            <div class="col-sm-12 col-lg-12" style="padding:0;" t-on-click="() => this.openEvent(event['id'])">
                                 <div class="text-color">
                                     <div class="">
                                         <div class="media">
                                             <div class="media-body">
-                                                <h2 class="text-color display-6" style="font-size: 15px;">
-                                                    <t t-esc="event['name']"/>
-                                                </h2>
-                                                <p>Date: <t t-esc="event['date_begin']"/> - <t t-esc="event['date_end']"/></p>
-                                                <t t-if="event['location']">
-                                                    <p>Venue: <t t-esc="event['location']"/></p>
+                                                <h2 class="text-color display-6"
+                                                    style="font-size: 15px;"><t t-esc="event[0]"/> </h2>
+                                                <p>Date : <t t-esc="event[1]"/>
+                                                    -
+                                                    <t
+                                                            t-esc="event[2]"/>
+                                                </p>
+                                                <t t-if="event[3]">
+                                                    <p>Venue : <t
+                                                            t-esc="event[3] "/></p>
+                                                </t>
+                                                <t t-if="event[4]">
+                                                    <p>Online</p>
                                                 </t>
                                             </div>
                                         </div>

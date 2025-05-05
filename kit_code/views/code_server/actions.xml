@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="act_window@code_server" model="ir.actions.act_window">
+            <field name="name">Message</field>
+            <field name="res_model">kit.code.server</field>
+            <field name="view_mode">list,form</field>
+
+    </record> 
+    
+ </data>
+</odoo>

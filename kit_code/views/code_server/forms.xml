@@ -1,0 +1,21 @@
+<odoo>
+  <data>  
+  <record id="viewForm@code_server" model="ir.ui.view">
+    <field name="name">Message Form</field>
+    <field name="model">kit.code.server</field>
+    <field name="arch" type="xml">
+        <form string="">
+            <sheet > 
+                <notebook groups="base.group_user">
+                    <page string="Message" >
+                         <div  > Time: <field name="ts" readonly="1" /> </div>
+                          <div> Message: <field name="message" readonly="1" /></div> 
+                    </page> 
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+  </record>
+
+  </data>
+</odoo>

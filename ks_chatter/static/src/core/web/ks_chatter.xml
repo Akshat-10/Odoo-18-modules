@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="ks_chatter.chatter" t-inherit="mail.Chatter" t-inherit-mode="extension">
+        <xpath expr="//t[@name='chatter-topbar-left-buttons']" position="replace">
+            <t t-else="" name="chatter-topbar-left-buttons-inherit">
+                <div class="d-flex align-items-center flex-wrap">
+                    <button class="o-mail-Chatter-sendMessage btn text-nowrap me-2" t-att-class="{
+                            'btn-primary': state.composerType !== 'note',
+                            'btn-secondary': state.composerType === 'note',
+                            'active': state.composerType === 'message',
+                            'my-2': !props.compactHeight
+                        }"
+                            t-att-disabled="!state.thread.hasWriteAccess and !(state.thread.hasReadAccess and state.thread.canPostOnReadonly) and props.threadId"
+                            data-hotkey="m" t-on-click="() => this.toggleComposer('message')">
+                        Send message
+                    </button>
+                    <button class="o-mail-Chatter-logNote btn text-nowrap me-2" t-att-class="{
+                            'btn-primary active': state.composerType === 'note',
+                            'btn-secondary': state.composerType !== 'note',
+                            'my-2': !props.compactHeight
+                        }"
+                            t-att-disabled="!state.thread.hasWriteAccess and !(state.thread.hasReadAccess and state.thread.canPostOnReadonly) and props.threadId"
+                            data-hotkey="shift+m" t-on-click="() => this.toggleComposer('note')">
+                        Log note
+                    </button>
+                    <button t-if="props.has_activities"
+                            class="o-mail-Chatter-activity me-2 btn btn-secondary text-nowrap"
+                            t-att-class="{ 'my-2': !props.compactHeight }" data-hotkey="shift+a"
+                            t-on-click="scheduleActivity">
+                        <span>Activities</span>
+                    </button>
+                    <t t-set="models" t-value="this.state.models"/>
+                        <t t-if="models and models.length>0">
+                            <select id="ks_model_id" class="me-2 encapsulated-select" name="ks_model"
+                                    t-on-change="onModelChange">
+                                <t t-foreach="models" t-as="model" t-key="model_index">
+                                    <option t-att-selected="model[0]==this.state.current_model" t-att-value="model">
+                                        <t t-esc="model[1]"/>
+                                    </option>
+                                </t>
+                            </select>
+                            <select id="ks_record_id" name="ks_record" class="me-2 encapsulated-select"
+                                    t-on-change="onRecordChange">
+                                <t t-foreach="this.state.current_model_records" t-as="record" t-key="record_index">
+                                    <option t-att-selected="record[1] == this.state.current_record[1]"
+                                            t-att-value="record">
+                                        <t t-esc="record[0]"/>
+                                    </option>
+                                </t>
+                            </select>
+                        </t>
+                </div>
+                <span class="o-mail-Chatter-topbarGrow flex-grow-1 pe-2"/>
+                <button class="btn btn-link text-action" aria-label="Search Messages" title="Search Messages"
+                        t-on-click="onClickSearch">
+                    <i class="oi oi-search" role="img"/>
+                </button>
+            </t>
+        </xpath>
+    </t>
+</templates>

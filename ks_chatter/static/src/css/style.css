@@ -1,0 +1,25 @@
+#ks_model_id {
+    position: relative;
+}
+
+#ks_model_id::after {
+    content: '▼';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #6c757d;
+}
+
+.encapsulated-select {
+    color: #343a40;
+    background-color: #dee2e6;
+    border-color: #dee2e6;
+    padding:5px 8px;
+    font-weight:500;
+    border-radius:0.25rem;
+    width:130px !important;
+    background-position-x: 115px;
+    text-overflow: ellipsis;
+}

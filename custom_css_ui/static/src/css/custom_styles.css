@@ -155,7 +155,7 @@
 
 /* for ribbon */
 .ribbon-top-right {
-    margin-top: -50px !important;
+    margin-top: -8px !important;
 
 }
 /* for Button */
@@ -587,11 +587,6 @@ a {
     border: 1px solid #27292c !important;
 }
 
-/* for ribbon */
-.ribbon-top-right {
-    margin-top: -50px !important;
-
-}
 /* for Button */
 /* Primary Button */
 .btn-fill-primary, .btn-primary {

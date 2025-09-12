@@ -32,7 +32,7 @@
     'company': 'Cybrosys Techno Solutions',
     'maintainer': 'Cybrosys Techno Solutions',
     'website': 'https://www.cybrosys.com',
-    'depends': ['product', 'point_of_sale'],
+    'depends': ['product', 'stock'],
     'data': [
         'views/res_config_settings_views.xml',
         'views/product_product_views.xml',
@@ -42,9 +42,9 @@
         'web.assets_backend': [
             'low_stocks_product_alert/static/src/css/template_color.css',
         ],
-        'point_of_sale._assets_pos': [
-            'low_stocks_product_alert/static/src/xml/product_item_template.xml',
-        ],
+        # 'point_of_sale._assets_pos': [
+        #     'low_stocks_product_alert/static/src/xml/product_item_template.xml',
+        # ],
     },
     'images': ['static/description/banner.jpg'],
     'license': "LGPL-3",

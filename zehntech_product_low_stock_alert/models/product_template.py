@@ -18,6 +18,16 @@ class ProductTemplate(models.Model):
     
     color_field = fields.Char(string="Color", compute='_compute_color_field', store=False)
 
+    show_alert_quantity = fields.Boolean(
+        compute='_compute_show_alert_quantity',
+        string="Show Alert Quantity Field"
+    )
+
+    def _compute_show_alert_quantity(self):
+        method = self.env['ir.config_parameter'].sudo().get_param('zehntech_product_low_stock_alert.method', 'global')
+        for rec in self:
+            rec.show_alert_quantity = (method == 'individual')
+            
     @api.depends('qty_available', 'alert_quantity')
     def _compute_color_field(self):
        

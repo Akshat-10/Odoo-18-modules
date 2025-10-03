@@ -2,15 +2,15 @@
 <odoo>
     <!--Inherit product.product view form to add field-->
     <record id="product_normal_form_view" model="ir.ui.view">
-        <field name="name">
-            product.product.view.form.inherit.low.stocks.product.alert
-        </field>
+        <field name="name">product.product.view.form.inherit.low.stocks.product.alert</field>
         <field name="model">product.product</field>
         <field name="inherit_id" ref="product.product_normal_form_view"/>
         <field name="arch" type="xml">
-            <field name="pos_categ_ids" position="after">
+            <!-- Use an xpath on a field that always exists in the product form (categ_id) instead of pos_categ_ids
+                 because pos_categ_ids is only present if Point of Sale module is installed, which caused the ParseError. -->
+            <xpath expr="//field[@name='categ_id']" position="after">
                 <field name="alert_tag"/>
-            </field>
+            </xpath>
         </field>
     </record>
 </odoo>

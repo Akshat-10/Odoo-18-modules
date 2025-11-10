@@ -840,7 +840,6 @@ a {
     background-color: #30225e;
     color: #FFFFFF;
 }
-
 /* Kanban View */
 .o_kanban_renderer .oe_kanban_card.oe_kanban_global_click, .o_kanban_renderer .oe_kanban_card.oe_kanban_global_click_edit, .o_kanban_renderer .oe_kanban_card .oe_kanban_global_click, .o_kanban_renderer .oe_kanban_card .oe_kanban_global_click_edit, .o_kanban_renderer .o_kanban_record.oe_kanban_global_click, .o_kanban_renderer .o_kanban_record.oe_kanban_global_click_edit, .o_kanban_renderer .o_kanban_record .oe_kanban_global_click, .o_kanban_renderer .o_kanban_record .oe_kanban_global_click_edit {
     cursor: pointer;

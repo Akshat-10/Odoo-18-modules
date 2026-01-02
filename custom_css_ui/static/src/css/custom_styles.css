@@ -479,7 +479,6 @@ a {
 .modal-header,
 .modal-footer {
     position: relative;
-    z-index: 1;
     background: none; /* Remove default background */
 }
 
